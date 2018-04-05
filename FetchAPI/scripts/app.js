@@ -10,23 +10,22 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 function sendRequest(data) {
-  data = {
-    "name": "morpheus",
-    "job": "leader"
+  let newData = {};
+  for( var entry of data.entries() ) {
+    newData[entry[0]] = entry[1];
   }
-  console.log(JSON.stringify(data));
   
   fetch(ENDPOINT, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(newData),
       headers: {
         "Accept": "application/json"
       }  
   })
   .then(response => {
-    console.log(response);
+    console.log(response.json());  
   })
   .catch(err => {
-    throw err.message;
+    throw err;
   });
 }
