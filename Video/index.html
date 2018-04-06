@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HTML Video</title>
+	<style>
+
+		.video-end-notice {
+			background: lightgreen;
+			color: black;
+			padding: 20px;
+			border-radius: 10px;
+			text-align: center;
+			width: 450px;
+			height: 20px;
+			visibility: hidden;
+		}
+	</style>
+</head>
+<body>
+<h1>Layout - Video</h1>	
+<div class="video-end-notice">
+	Video Finished
+</div>
+<div class="player">
+	<video class="player__video viewer" controls width="500" height="400">
+		<source src="video.mp4" type="video/mp4">
+	</video>
+</div>
+<script type="text/javascript">
+	const VIDEO = document.querySelector('video');
+	VIDEO.addEventListener('timeupdate', handleProgress);
+	
+
+	function handleProgress() {		
+		console.log('Duration', VIDEO.duration);
+		console.log('Current Time', VIDEO.currentTime);
+		if (VIDEO.duration === VIDEO.currentTime) {
+			document.querySelector('.video-end-notice').style.visibility = 'visible';
+		}
+	}
+</script>
+
+</body>
+</html>
