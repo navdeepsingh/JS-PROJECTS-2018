@@ -82,6 +82,37 @@
           console.log('Woot! Did it');
         };
       }
+
+      function getAllItems(callback) {
+        var trans = db.transaction('moviesOS', 'readonly');
+        var store = trans.objectStore('moviesOS');
+        var items = [];
+
+        trans.oncomplete = function (evt) {
+          callback(items);
+        };
+
+        var cursorRequest = store.openCursor();
+
+        cursorRequest.onerror = function (error) {
+          console.log(error);
+        };
+
+        cursorRequest.onsuccess = function (evt) {
+          var cursor = evt.target.result;
+          if (cursor) {
+            items.push(cursor.value);
+            cursor.continue();
+          }
+        };
+      }
+
+      getAllItems(function (items) {
+        var len = items.length;
+        for (var i = 0; i < len; i += 1) {
+          console.log(items[i]);
+        }
+      });
       
 
   </script>
