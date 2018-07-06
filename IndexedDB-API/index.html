@@ -4,10 +4,9 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Storage - IndexedDB API</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"> 
-  
-  <style>
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="app.js"></script>
 </head>
 <body>
   <h1>Storage - IndexedDB API</h1>
@@ -41,12 +40,12 @@
       const idb = window.indexedDB;
       console.log(idb);
 
-      var db;
+      let db;
 
       var openRequest = indexedDB.open('movies_db', 2);
 
       openRequest.onupgradeneeded = function (e) {
-        var db = e.target.result;
+        db = e.target.result;
         console.log('running onupgradeneeded');
         if (!db.objectStoreNames.contains('moviesOS')) {
           var storeOS = db.createObjectStore('moviesOS',
@@ -55,8 +54,6 @@
       };
       openRequest.onsuccess = function (e) {
         console.log('running onsuccess');
-        db = e.target.result;
-        addItem();
       };
       openRequest.onerror = function (e) {
         console.log('onerror!');
@@ -66,25 +63,23 @@
       function addItem() {
         var transaction = db.transaction(['moviesOS'], 'readwrite');
         var store = transaction.objectStore('moviesOS');
-        var item = {
-          title: 'Padamavati',
-          releaseYear: '2018',
-          cast: 'Deepika Padukone, Ranbir Singh',
-          created: new Date().getTime()
-        };
+        let request;
 
-        var request = store.add(item);
+        MOVIES.map(movie => {
+          request = store.add(movie);
 
-        request.onerror = function (e) {
-          console.log('Error', e.target.error.name);
-        };
-        request.onsuccess = function (e) {
-          console.log('Woot! Did it');
-        };
+          request.onerror = function (e) {
+            console.log('Error', e.target.error.name);
+          };
+          request.onsuccess = function (e) {
+            console.log('Woot! Added: ' + movie.title);
+          };
+        })
+
       }
 
       function getAllItems(callback) {
-        var trans = db.transaction('moviesOS', 'readonly');
+        var trans = db.transaction(['moviesOS'], 'readonly');
         var store = trans.objectStore('moviesOS');
         var items = [];
 
@@ -107,15 +102,22 @@
         };
       }
 
+      const button = document.querySelector('button');
+      button.addEventListener('click', function() {
+        console.log('Button Clicked');
+        addItem();
+      });
+
       getAllItems(function (items) {
         var len = items.length;
         for (var i = 0; i < len; i += 1) {
           console.log(items[i]);
         }
       });
-      
+
+
+
 
   </script>
-  <script src="app.js"></script>
 </body>
 </html>
