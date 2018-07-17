@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Web Worker</title>
+  </head>
+  <body>
+
+    <div id="log"></div>
+    <script id="worker1" type="javascript/worker">
+      self.onmessage = function(e) {
+        self.postMessage('msg from worker');
+      };
+    </script>
+
+    <script>
+      function log(msg) {
+        // Use a fragment: browser will only render/reflow once.
+        var fragment = document.createDocumentFragment();
+        fragment.appendChild(document.createTextNode(msg));
+        fragment.appendChild(document.createElement('br'));
+
+        document.querySelector("#log").appendChild(fragment);
+      }
+
+      var blob = new Blob([document.querySelector('#worker1').textContent]);
+
+      var worker = new Worker(window.URL.createObjectURL(blob));
+      worker.onmessage = function(e) {
+        log("Received: " + e.data);
+      }
+      worker.postMessage('start'); // Start the worker.
+    </script>
+
+    <h1>This is Web Worker Demo page</h1>
+    <p>Blah Blah.................</p>
+  </body>
+</html>
